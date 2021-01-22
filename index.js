@@ -288,12 +288,20 @@ export default class EmojiSelector extends Component {
       searchBarProps,
       searchBarStyle,
       searchBarContainerStyle,
+      SearchBarComponent,
       ...other
     } = this.props;
 
     const { category, colSize, isReady, searchQuery } = this.state;
 
-    const Searchbar = (
+    const Searchbar = SearchBarComponent ? (
+      <SearchBarComponent
+        value={searchQuery}
+        onChangeText={this.handleSearch}
+        autoCorrect={false}
+        placeholder={placeholder}
+      />
+    ) : (
       <View style={[styles.searchbar_container, searchBarContainerStyle]}>
         <TextInput
           style={[styles.search, searchBarStyle]}
