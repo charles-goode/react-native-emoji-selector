@@ -304,7 +304,7 @@ export default class EmojiSelector extends Component {
           underlineColorAndroid={theme}
           value={searchQuery}
           onChangeText={this.handleSearch}
-          {...props}
+          {...searchBarProps}
         />
       </View>
     );
