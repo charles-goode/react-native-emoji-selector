@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   TextInput,
   Platform,
+  Image,
   ActivityIndicator,
   AsyncStorage,
   FlatList,
@@ -112,9 +113,9 @@ const EmojiCell = ({ emoji, colSize, ...other }) => (
     }}
     {...other}
   >
-    {emoji.isCustom ? (
+    {emoji.source ? (
       <Image
-        style={{ height: colSize - 12, width: colSize - 12 }}
+        style={{ height: colSize - 8, width: colSize - 8 }}
         source={emoji.source}
       />
     ) : (
@@ -155,7 +156,9 @@ export default class EmojiSelector extends Component {
     if (this.props.showHistory) {
       this.addToHistoryAsync(emoji);
     }
-    this.props.onEmojiSelected(charFromEmojiObject(emoji));
+    this.props.onEmojiSelected(
+      emoji.source ? emoji.name : charFromEmojiObject(emoji)
+    );
   };
 
   handleSearch = (searchQuery) => {
@@ -208,10 +211,11 @@ export default class EmojiSelector extends Component {
 
   returnSectionData() {
     const { history, emojiList, searchQuery, category, allEmojis } = this.state;
+    const { customEmojis } = this.props;
     let emojiData = (function () {
       if (category === Categories.all && searchQuery === "") {
         //TODO: OPTIMIZE THIS
-        let largeList = this.props.customEmojis;
+        let largeList = customEmojis;
         categoryKeys.forEach((c) => {
           const name = Categories[c].name;
           const list =
@@ -281,7 +285,7 @@ export default class EmojiSelector extends Component {
   //  LIFECYCLE METHODS
   //
   componentDidMount() {
-    const { category, showHistory, customEmojis = [] } = this.props;
+    const { category, showHistory, customEmojis } = this.props;
     this.setState({ category, allEmojis: customEmojis.concat(emoji) });
 
     if (showHistory) {
@@ -390,6 +394,7 @@ EmojiSelector.defaultProps = {
   showSectionTitles: true,
   columns: 6,
   placeholder: "Search...",
+  customEmojis: [],
 };
 
 const styles = StyleSheet.create({
