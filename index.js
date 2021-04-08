@@ -281,8 +281,8 @@ export default class EmojiSelector extends Component {
   //  LIFECYCLE METHODS
   //
   componentDidMount() {
-    const { category, showHistory, customEmojis } = this.props;
-    this.setState({ category, allEmojis: [...customEmojis, ...emoji] });
+    const { category, showHistory, customEmojis = [] } = this.props;
+    this.setState({ category, allEmojis: customEmojis.concat(emoji) });
 
     if (showHistory) {
       this.loadHistoryAsync();
@@ -362,7 +362,7 @@ export default class EmojiSelector extends Component {
                   numColumns={columns}
                   keyboardShouldPersistTaps={"always"}
                   ref={(scrollview) => (this.scrollview = scrollview)}
-                  removeClippedSubviews
+                  removeClippedSubviews={true}
                   {...flatlistProps}
                 />
               </View>
