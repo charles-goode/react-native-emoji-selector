@@ -1,6 +1,6 @@
 declare module "react-native-emoji-selector" {
   import * as React from "react";
-
+  import { ImageSource } from 'react-native'
   /**
    * Categories
    * The package itself exports a dictionary of objects, however
@@ -22,6 +22,12 @@ declare module "react-native-emoji-selector" {
     flag = "flag"
   }
 
+  type CustomEmoji = {
+    source: ImageSource;
+    name: string;
+    short_names: string[];
+  }
+
   export interface EmojiSelectorProps {
     onEmojiSelected(emoji: string): void;
     theme?: string;
@@ -33,6 +39,12 @@ declare module "react-native-emoji-selector" {
     category?: Categories;
     columns?: number;
     shouldInclude?: (e: any)=>boolean;
+    searchBarProps?: object;
+    searchBarStyle?: object;
+    searchBarContainerStyle?: object
+    SearchBarComponent?: React.ComponentType<>;
+    flatlistProps?: object;
+    customEmojis?: CustomEmoji[];
   }
 
   const EmojiSelector: React.ComponentType<EmojiSelectorProps>;

@@ -112,9 +112,16 @@ const EmojiCell = ({ emoji, colSize, ...other }) => (
     }}
     {...other}
   >
-    <Text style={{ color: "#FFFFFF", fontSize: colSize - 12 }}>
-      {charFromEmojiObject(emoji)}
-    </Text>
+    {emoji.isCustom ? (
+      <Image
+        style={{ height: colSize - 12, width: colSize - 12 }}
+        source={emoji.source}
+      />
+    ) : (
+      <Text style={{ color: "#FFFFFF", fontSize: colSize - 12 }}>
+        {charFromEmojiObject(emoji)}
+      </Text>
+    )}
   </TouchableOpacity>
 );
 
@@ -200,11 +207,11 @@ export default class EmojiSelector extends Component {
   );
 
   returnSectionData() {
-    const { history, emojiList, searchQuery, category } = this.state;
+    const { history, emojiList, searchQuery, category, allEmojis } = this.state;
     let emojiData = (function () {
       if (category === Categories.all && searchQuery === "") {
         //TODO: OPTIMIZE THIS
-        let largeList = [];
+        let largeList = this.props.customEmojis;
         categoryKeys.forEach((c) => {
           const name = Categories[c].name;
           const list =
@@ -213,13 +220,16 @@ export default class EmojiSelector extends Component {
             largeList = largeList.concat(list);
         });
 
-        return largeList.map((emoji) => ({ key: emoji.unified, emoji }));
+        return largeList.map((emoji) => ({
+          key: emoji.unified || emoji.name,
+          emoji,
+        }));
       } else {
         let list;
         const hasSearchQuery = searchQuery !== "";
         const name = category.name;
         if (hasSearchQuery) {
-          const filtered = emoji.filter((e) => {
+          const filtered = allEmojis.filter((e) => {
             let display = false;
             e.short_names.forEach((name) => {
               if (name.includes(searchQuery.toLowerCase())) display = true;
@@ -232,7 +242,10 @@ export default class EmojiSelector extends Component {
         } else {
           list = emojiList[name];
         }
-        return list.map((emoji) => ({ key: emoji.unified, emoji }));
+        return list.map((emoji) => ({
+          key: emoji.unified || emoji.name,
+          emoji,
+        }));
       }
     })();
     return this.props.shouldInclude
@@ -268,8 +281,8 @@ export default class EmojiSelector extends Component {
   //  LIFECYCLE METHODS
   //
   componentDidMount() {
-    const { category, showHistory } = this.props;
-    this.setState({ category });
+    const { category, showHistory, customEmojis } = this.props;
+    this.setState({ category, allEmojis: [...customEmojis, ...emoji] });
 
     if (showHistory) {
       this.loadHistoryAsync();
@@ -289,6 +302,7 @@ export default class EmojiSelector extends Component {
       searchBarStyle,
       searchBarContainerStyle,
       SearchBarComponent,
+      flatlistProps,
       ...other
     } = this.props;
 
@@ -349,6 +363,7 @@ export default class EmojiSelector extends Component {
                   keyboardShouldPersistTaps={"always"}
                   ref={(scrollview) => (this.scrollview = scrollview)}
                   removeClippedSubviews
+                  {...flatlistProps}
                 />
               </View>
             </View>
