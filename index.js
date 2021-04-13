@@ -368,6 +368,11 @@ export default class EmojiSelector extends Component {
                   horizontal={false}
                   numColumns={columns}
                   keyboardShouldPersistTaps={"always"}
+                  getItemLayout={(data, index) => ({
+                    length: colSize,
+                    offset: colSize * index,
+                    index,
+                  })}
                   ref={(scrollview) => (this.scrollview = scrollview)}
                   removeClippedSubviews={true}
                   {...flatlistProps}
