@@ -207,7 +207,7 @@ export default class EmojiSelector extends Component {
     <EmojiCell
       key={item.key}
       emoji={item.emoji}
-      onPress={this.handleEmojiSelect}
+      onEmojiPress={this.handleEmojiSelect}
       colSize={this.state.colSize}
     />
   );
