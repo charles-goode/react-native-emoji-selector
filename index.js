@@ -102,28 +102,31 @@ const TabBar = ({ theme, activeCategory, onPress, width }) => {
   });
 };
 
-const EmojiCell = ({ emoji, colSize, ...other }) => (
-  <TouchableOpacity
-    activeOpacity={0.5}
-    style={{
-      width: colSize,
-      height: colSize,
-      alignItems: "center",
-      justifyContent: "center",
-    }}
-    {...other}
-  >
-    {emoji.source ? (
-      <Image
-        style={{ height: colSize - 8, width: colSize - 8 }}
-        source={emoji.source}
-      />
-    ) : (
-      <Text style={{ color: "#FFFFFF", fontSize: colSize - 12 }}>
-        {charFromEmojiObject(emoji)}
-      </Text>
-    )}
-  </TouchableOpacity>
+const EmojiCell = React.memo(
+  ({ emoji, colSize, onEmojiPress }) => (
+    <TouchableOpacity
+      activeOpacity={0.5}
+      style={{
+        width: colSize,
+        height: colSize,
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+      onPress={() => onEmojiPress(emoji)}
+    >
+      {emoji.source ? (
+        <Image
+          style={{ height: colSize - 8, width: colSize - 8 }}
+          source={emoji.source}
+        />
+      ) : (
+        <Text style={{ color: "#FFFFFF", fontSize: colSize - 12 }}>
+          {charFromEmojiObject(emoji)}
+        </Text>
+      )}
+    </TouchableOpacity>
+  ),
+  (prev, next) => prev.colSize === next.colSize
 );
 
 const storage_key = "@react-native-emoji-selector:HISTORY";
@@ -204,7 +207,7 @@ export default class EmojiSelector extends Component {
     <EmojiCell
       key={item.key}
       emoji={item.emoji}
-      onPress={() => this.handleEmojiSelect(item.emoji)}
+      onPress={this.handleEmojiSelect}
       colSize={this.state.colSize}
     />
   );
