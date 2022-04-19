@@ -12,6 +12,7 @@ import {
   FlatList,
 } from "react-native";
 import emoji from "emoji-datasource";
+const emoji_lookup = require("./emoji_lookup.json");
 
 export const Categories = {
   all: {
@@ -241,6 +242,14 @@ export default class EmojiSelector extends Component {
             e.short_names.forEach((name) => {
               if (name.includes(searchQuery.toLowerCase())) display = true;
             });
+            if (
+              e?.unified &&
+              emoji_lookup[e.unified.substring(0, 4)] !== undefined
+            ) {
+              emoji_lookup[e.unified.substring(0, 4)].forEach((name) => {
+                if (name.includes(searchQuery.toLowerCase())) display = true;
+              });
+            }
             return display;
           });
           list = sortEmoji(filtered);
