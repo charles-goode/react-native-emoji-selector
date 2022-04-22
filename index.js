@@ -242,13 +242,17 @@ export default class EmojiSelector extends Component {
             e.short_names.forEach((name) => {
               if (name.includes(searchQuery.toLowerCase())) display = true;
             });
-            if (
-              e?.unified &&
-              emoji_lookup[e.unified.substring(0, 4)] !== undefined
-            ) {
-              emoji_lookup[e.unified.substring(0, 4)].forEach((name) => {
-                if (name.includes(searchQuery.toLowerCase())) display = true;
-              });
+            if (e?.unified) {
+              let dashIdx = e.unified.indexOf("-");
+              if (dashIdx < 0) {
+                dashIdx = e.unified.length;
+              }
+              const unifiedShort = e.unified.substring(0, dashIdx);
+              if (emoji_lookup[unifiedShort] !== undefined) {
+                emoji_lookup[unifiedShort].forEach((name) => {
+                  if (name.includes(searchQuery.toLowerCase())) display = true;
+                });
+              }
             }
             return display;
           });
